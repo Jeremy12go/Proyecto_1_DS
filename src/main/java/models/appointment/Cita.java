@@ -1,11 +1,15 @@
 package models.appointment;
 
+import lombok.*;
 import models.person.Veterinario;
 import models.pet.Mascota;
-
+import java.io.Serializable;
 import java.util.Date;
 
-public class Cita {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Cita implements Serializable {
 
     private Date fecha;
     private String motivo;

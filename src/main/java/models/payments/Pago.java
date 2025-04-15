@@ -1,6 +1,13 @@
 package models.payments;
 
-public abstract class Pago{
+import lombok.*;
+
+import java.io.Serializable;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class Pago implements Serializable {
     protected int monto;
 
     public abstract void RealizarPago();

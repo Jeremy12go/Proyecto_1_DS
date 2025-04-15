@@ -1,6 +1,8 @@
 package models.payments;
 
-public class SeguroVeterinario extends Pago {
+import java.io.Serializable;
+
+public class SeguroVeterinario extends Pago implements Serializable {
 
     private String numeroPoliza;
     private String aseguradora;

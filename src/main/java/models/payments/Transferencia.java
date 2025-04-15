@@ -1,6 +1,8 @@
 package models.payments;
 
-public class Transferencia extends Pago{
+import java.io.Serializable;
+
+public class Transferencia extends Pago implements Serializable {
 
     @Override
     public void RealizarPago() {

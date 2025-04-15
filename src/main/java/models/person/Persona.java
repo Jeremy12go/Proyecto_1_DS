@@ -1,13 +1,12 @@
 package models.person;
 
-public class Persona {
+import lombok.*;
+import java.io.Serializable;
+
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+public class Persona implements Serializable {
+
     protected String nombre;
-    protected String apellido;
-
-    public Persona(String nombre, String apellido) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-    }
-
+    protected String rut;
 
 }

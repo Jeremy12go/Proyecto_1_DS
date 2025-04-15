@@ -1,8 +1,9 @@
 package models.payments;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Tarjeta extends Pago{
+public class Tarjeta extends Pago implements Serializable {
 
     private TipoTarjeta tipo;
     private String numero;
