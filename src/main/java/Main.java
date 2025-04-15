@@ -189,7 +189,7 @@ public class Main implements Serializable {
                     repo.saveDataList(duenos,"duenos.dat");
                     break;
                 case 4:
-                    System.out.println("\nEsperamos volver a verte pronto :D!\n");
+                    System.out.println("\nEsperamos volver a verte :D!\n");
 
                     // Guardado de datos.
                     repo.saveDataList(duenos,"duenos.dat");

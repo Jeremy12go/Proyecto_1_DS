@@ -3,8 +3,6 @@ package models.person;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import Repository.RepositoryManager;
 import models.appointment.Cita;
 import models.pet.EstadoSalud;
 import models.pet.Mascota;
@@ -157,7 +155,7 @@ public class Dueno extends Persona implements Serializable {
         }
 
         ArrayList<Cita> citasMascota = mascota.getCitas();
-        if(citasMascota.isEmpty()){
+        if(citasMascota == null){
             System.out.println(mascota.getNombre() + " no tiene citas registradas.");
             return;
         }
@@ -176,62 +174,70 @@ public class Dueno extends Persona implements Serializable {
 
         while (continuar) {
 
-            System.out.println("\nBienvenido " + nombre + "!");
+            int opcion = 2;
+
+            if (opcion == 2) {
+                System.out.println("\nBienvenido " + nombre + "!");
+            }
             System.out.println("1) Registrar Mascota");
             System.out.println("2) Mostrar citas de una mascota");
             System.out.println("3) Pagar cita");
             System.out.println("4) Mostrar historial medico de mascota");
-            System.out.println("5) Volver al menu");
+            System.out.println("5) Agendar cita para una mascota");
+            System.out.println("6) Volver al menu");
             System.out.print("Seleccione una opción: ");
-            int opcion = scan.nextInt();
+            opcion = scan.nextInt();
             scan.nextLine();// Evitar salto de linea.
 
-            switch (opcion) {
-                case 1:
-                    registrarMascota();
-                    break;
-                case 2:
-                    // Mostrar mascotas.
-                    System.out.println("\nListado de sus mascotas: ");
-                    int count = 1;
-                    for(Mascota mascota : this.mascotas){
-                        System.out.println(count+") " + mascota.getNombre());
-                        count++;
-                    }
-
-                    // Selección mascota.
-                    int decision_mascota = 0;
-                    while (true){
-                        System.out.println("\n| 0 para volver atrás.");
-                        System.out.println("Escribe el numero de la mascota a la cual le quiere ver las citas: ");
-                        decision_mascota = scan.nextInt();
-                        scan.nextLine();// Evitar salto de linea.
-
-                        if(decision_mascota < 0 || decision_mascota > this.mascotas.size()){
-                            System.out.println("El numero de la mascota no existe");
-                        }else if (decision_mascota == 0){
-                            break;
+            if(opcion < 1 || opcion > 7){
+                System.out.println("\n!El digito que ingresaste no es valido¡");
+            }else{
+                switch (opcion) {
+                    case 1:
+                        registrarMascota();
+                        break;
+                    case 2:
+                        // Mostrar mascotas.
+                        System.out.println("\nListado de sus mascotas: ");
+                        int count = 1;
+                        for(Mascota mascota : this.mascotas){
+                            System.out.println(count+") " + mascota.getNombre());
+                            count++;
                         }
-                    }
-                    if(decision_mascota != 0){
-                        citasDeMascota(this.mascotas.get(count-1));
-                    }
 
-                    break;
-                case 3:
-                    System.out.println("Pagar cita");
-                    break;
-                case 4:
-                    System.out.println("Mostrar historial medico de mascota");
-                    break;
-                case 5:
-                    System.out.println();
-                    continuar = false;
-                    break;
-                default:
-                    System.out.println("Por favor escoje una opcion valida");
+                        // Selección mascota.
+                        int decision_mascota = 0;
+                        while (true){
+                            System.out.println("\n| 0 para volver atrás.");
+                            System.out.println("Escribe el numero de la mascota a la cual le quiere ver las citas: ");
+                            decision_mascota = scan.nextInt();
+                            scan.nextLine();// Evitar salto de linea.
+
+                            if(decision_mascota < 0 || decision_mascota > this.mascotas.size()){
+                                System.out.println("El numero de la mascota no existe");
+                            }else if(decision_mascota != 0){
+                                citasDeMascota(this.mascotas.get(decision_mascota-1));
+                                break;
+                            }else{
+                                break;
+                            }
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Pagar cita");
+                        break;
+                    case 4:
+                        System.out.println("Mostrar historial medico de mascota");
+                        break;
+                    case 5:
+                        System.out.println("Agendar cita para una mascota");
+                        break;
+                    case 6:
+                        System.out.println();
+                        continuar = false;
+                        break;
+                }
             }
         }
     }
-
 }
