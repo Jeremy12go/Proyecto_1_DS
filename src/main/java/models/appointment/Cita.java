@@ -21,6 +21,11 @@ public class Cita implements Serializable {
     private Pago pago;
 
     public Cita(Date from, String motivo, Mascota mascota, Veterinario vet, Servicio servicio) {
+        this.fecha = from;
+        this.motivo = motivo;
+        this.mascotaAsignada = mascota;
+        this.veterinarioAsignado = vet;
+        this.servicioAsignado = servicio;
     }
 
     public void asignarServicio(Servicio servicio) {
