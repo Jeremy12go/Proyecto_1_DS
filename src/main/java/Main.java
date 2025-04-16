@@ -180,8 +180,45 @@ public class Main implements Serializable {
                     }
                     break;
                 case 2:
-                    // Todo: Cargar VETERINARIOS
-                    System.out.println("Has seleccionado: Veterinario");
+                    if (veterinarios.isEmpty()) {
+                        System.out.println("No hay veterinarios registrados.");
+                        break;
+                    }else{
+                        System.out.println("\nLista de veterinarios registrados:");
+
+                        // Mostrar veterinarios registrados.
+                        int contador = 0;
+                        while (contador<veterinarios.size()){
+                            Veterinario veterinarioElegido = veterinarios.get(contador);
+                            System.out.println((contador+1) + ".- " + veterinarioElegido.getNombre() + "\n");
+                            contador+=1;
+                        }
+
+                        while (true){
+                            System.out.println("| 0 para volver atrás ");
+                            System.out.print("Por favor selecciona un veterinario (escribe el numero): ");
+
+                            opcion_elegida = scan.nextInt();
+                            scan.nextLine(); // Evitar salto de linea.
+
+                            if(opcion_elegida != 0 && veterinarios.size() >= opcion_elegida){
+                                Veterinario veterinarioElegido = veterinarios.get(opcion_elegida-1);
+
+                                // Muestra el menu de opciones del dueño.
+                                veterinarioElegido.menuVeterinario(servicios);
+
+                                // Guardado de datos.
+                                repo.saveDataList(duenos,"duenos.dat");
+
+                                // Salir del ciclo veterinario.
+                                break;
+                            }else if (opcion_elegida == 0){
+                                break;
+                            }else{
+                                System.out.println("La elección "+ opcion_elegida +" no esta permitida");
+                            }
+                        }
+                    }
                     break;
                 case 3:
                     registrarDueno();

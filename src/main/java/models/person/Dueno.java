@@ -224,7 +224,36 @@ public class Dueno extends Persona implements Serializable {
                         }
                         break;
                     case 3:
-                        System.out.println("Pagar cita");
+                        // Mostrar Citas de mascotas.
+                        System.out.println("\nListado de citas por mascota: ");
+                        count = 1;
+                        for(Mascota mascota : this.mascotas){
+                            ArrayList<Cita> citas = mascota.getCitas();
+                            for(Cita cita : citas){
+                                System.out.println(count+") " + mascota.getNombre() + " tiene cita con valor"
+                                        + cita.CalcularCostoTotal());
+                                count++;
+                            }
+
+                        }
+
+                        // Selección mascota.
+                        decision_mascota = 0;
+                        while (true){
+                            System.out.println("\n| 0 para volver atrás.");
+                            System.out.println("Escribe el numero de la mascota a la cual le quiere ver las citas: ");
+                            decision_mascota = scan.nextInt();
+                            scan.nextLine();// Evitar salto de linea.
+
+                            if(decision_mascota < 0 || decision_mascota > this.mascotas.size()){
+                                System.out.println("El numero de la mascota no existe");
+                            }else if(decision_mascota != 0){
+                                citasDeMascota(this.mascotas.get(decision_mascota-1));
+                                break;
+                            }else{
+                                break;
+                            }
+                        }
                         break;
                     case 4:
                         System.out.println("Mostrar historial medico de mascota");

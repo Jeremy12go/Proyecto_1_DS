@@ -1,9 +1,9 @@
 package models.service;
 
-import lombok.Data;
+import lombok.*;
 import java.io.Serializable;
 
-@Data
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Servicio implements Serializable {
 
     private String nombre;
@@ -11,5 +11,4 @@ public class Servicio implements Serializable {
     private String descripcion;
     private int costo;
     private int duracionEnMinuto;
-
 }
