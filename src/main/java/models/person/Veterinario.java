@@ -28,7 +28,8 @@ public class Veterinario extends Persona implements Serializable {
         System.out.println("\nListado de citas del día:");
         int count = 1;
         for (Cita cita : this.disponibilidad) {
-            System.out.println(count + ") " + cita.getFecha() + " - Mascota: " + cita.getMascotaAsignada().getNombre());
+            String nombreMascota = (cita.getMascotaAsignada() != null) ? cita.getMascotaAsignada().getNombre() : "Sin asignar";
+            System.out.println(count + ") " + cita.getFecha() + " - Mascota: " + nombreMascota);
             count++;
         }
 

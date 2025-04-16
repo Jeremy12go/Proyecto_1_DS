@@ -164,7 +164,7 @@ public class Dueno extends Persona implements Serializable {
         // Mostrar citas
         System.out.println(mascota.getNombre() + " tiene " + citasMascota.size() + " citas: ");
         for(Cita cita : citasMascota){
-            System.out.println("Con fecha: "+ cita.getFecha().toString()+"\nCon motivo de: " + cita.getMotivo() + "\n");
+            System.out.println("Con fecha: " + cita.getFecha().toString()+"\nCon motivo de: " + cita.getMotivo() + "\n");
         }
     }
 
@@ -250,9 +250,12 @@ public class Dueno extends Persona implements Serializable {
                             if(decision_cita < 0 || decision_cita > count-1){
                                 System.out.println("El numero de cita no existe");
                             }else if(decision_cita != 0){
-
-                                Cita citaA_Pagar = citasDisponiblesPago.get(decision_cita);
-
+                                Cita citaA_Pagar = citasDisponiblesPago.get(decision_cita-1);
+                                //PERO ESPERA
+                                if (citaA_Pagar.getEstado().contains(EstadoCita.PAGADO)){
+                                    System.out.println("Esta cita ya esta pagaada :)");
+                                    break;
+                                }
                                 // Selección de método de pago.
                                 menuSeleccionPago(citaA_Pagar);
 
@@ -280,7 +283,9 @@ public class Dueno extends Persona implements Serializable {
     public void menuSeleccionPago(Cita cita) {
         Scanner scan = new Scanner(System.in);
         int monto = cita.calcularCostoTotal();
+        System.out.println("El costo total es de: " + monto);
         Pago pago = null;
+
 
         while (true) {
             System.out.println("\nMétodos de pago disponibles:");
@@ -315,6 +320,9 @@ public class Dueno extends Persona implements Serializable {
 
                 case 2:
                     pago = new Efectivo(monto);
+                    pago.RealizarPago();
+                    cita.getEstado().remove(EstadoCita.NO_PAGADO);
+                    cita.getEstado().add(EstadoCita.PAGADO);
                     break;
 
                 case 3:

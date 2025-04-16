@@ -313,6 +313,7 @@ public class Main implements Serializable {
                 case 4:
                     System.out.println("\nEsperamos volver a verte :D!\n");
                     // Guardado de datos.
+                    cargarDatosSimulados();
                     repo.saveDataList(duenos,"duenos.dat");
                     repo.saveDataList(veterinarios,"veterinarios.dat");
                     repo.saveDataList(servicios,"servicios.dat");
