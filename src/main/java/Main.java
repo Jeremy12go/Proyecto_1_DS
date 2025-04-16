@@ -10,6 +10,7 @@ import models.person.Direccion;
 import models.person.Dueno;
 import models.person.Veterinario;
 import models.pet.EstadoSalud;
+import models.pet.HistorialMedico;
 import models.pet.Mascota;
 import models.service.Servicio;
 
@@ -137,10 +138,18 @@ public class Main implements Serializable {
         Dueno dueno1 = new Dueno("Cristina Morales", "12.345.678-9", "cristina@mail.com", dir1, "912345678");
         Dueno dueno2 = new Dueno("José Pizarro", "22.222.222-2", "jose@mail.com", dir2, "987654321");
 
+        // Fechas fijas para las citas
+        LocalDate fecha1 = LocalDate.of(2025, 4, 20);
+        LocalDate fecha2 = LocalDate.of(2025, 4, 22);
+        LocalDate fecha3 = LocalDate.of(2025, 4, 25);
+
         // Mascotas
-        Mascota max = new Mascota("Max", "Perro", "Labrador", 36, 25.0f, true, 100001, EstadoSalud.NORMAL, new ArrayList<>());
-        Mascota kitty = new Mascota("Kitty", "Gato", "Persa", 18, 4.2f, false, 0, EstadoSalud.ALERGIA_A, new ArrayList<>());
-        Mascota luna = new Mascota("Luna", "Perro", "Poodle", 12, 6.5f, true, 100002, EstadoSalud.NORMAL, new ArrayList<>());
+        Mascota max = new Mascota("Max", "Perro", "Labrador", 36, 25.0f,
+                true, 100001, EstadoSalud.NORMAL, new ArrayList<>(), new HistorialMedico());
+        Mascota kitty = new Mascota("Kitty", "Gato", "Persa", 18, 4.2f,
+                false, 0, EstadoSalud.ALERGIA_A, new ArrayList<>(), new HistorialMedico());
+        Mascota luna = new Mascota("Luna", "Perro", "Poodle", 12, 6.5f,
+                true, 100002, EstadoSalud.NORMAL, new ArrayList<>(), new HistorialMedico());
 
         dueno1.getMascotas().add(max);
         dueno1.getMascotas().add(kitty);
@@ -156,10 +165,7 @@ public class Main implements Serializable {
         veterinarios.add(vet1);
         veterinarios.add(vet2);
 
-        // Fechas fijas para las citas
-        LocalDate fecha1 = LocalDate.of(2025, 4, 20);
-        LocalDate fecha2 = LocalDate.of(2025, 4, 22);
-        LocalDate fecha3 = LocalDate.of(2025, 4, 25);
+
 
         // Citas manuales
         Cita cita1 = new Cita(
@@ -189,15 +195,29 @@ public class Main implements Serializable {
         );
         cita3.setEstado(EnumSet.of(EstadoCita.PENDIENTE, EstadoCita.NO_PAGADO));
 
+        // Asignar citas a veterinarios
+        vet1.getDisponibilidad().add(cita1);
+        vet1.getDisponibilidad().add(cita3);
+        vet2.getDisponibilidad().add(cita2);
+
+        // Historial medico.
+        HistorialMedico h1 = new HistorialMedico(cita1.getFecha(), cita1.getMotivo(), "Se mejora",
+                cita1.getServicioAsignado().getDescripcion(), false);
+        HistorialMedico h2 = new HistorialMedico(cita2.getFecha(), cita2.getMotivo(), "Murio",
+                cita2.getServicioAsignado().getDescripcion(), false);
+        HistorialMedico h3 = new HistorialMedico(cita3.getFecha(), cita3.getMotivo(), "Se mantiene bien",
+                cita3.getServicioAsignado().getDescripcion(), false);
+
+        // Asignar historial medico
+        max.setHistorialMedico(h1);
+        kitty.setHistorialMedico(h2);
+        luna.setHistorialMedico(h3);
+
         // Asignar citas a mascotas
         max.getCitas().add(cita1);
         kitty.getCitas().add(cita2);
         luna.getCitas().add(cita3);
 
-        // Asignar citas a veterinarios
-        vet1.getDisponibilidad().add(cita1);
-        vet1.getDisponibilidad().add(cita3);
-        vet2.getDisponibilidad().add(cita2);
     }
 
 
@@ -306,14 +326,12 @@ public class Main implements Serializable {
                     }
                     break;
                 case 3:
-                    registrarDueno();
                     // Guardado de datos.
                     repo.saveDataList(duenos,"duenos.dat");
                     break;
                 case 4:
                     System.out.println("\nEsperamos volver a verte :D!\n");
                     // Guardado de datos.
-                    cargarDatosSimulados();
                     repo.saveDataList(duenos,"duenos.dat");
                     repo.saveDataList(veterinarios,"veterinarios.dat");
                     repo.saveDataList(servicios,"servicios.dat");

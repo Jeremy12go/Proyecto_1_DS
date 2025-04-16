@@ -143,7 +143,7 @@ public class Dueno extends Persona implements Serializable {
                 break;
         }
         Mascota mascota = new Mascota(nombre_mascota,especie_mascota,raza_mascota,edad_en_meses_mascota,peso_mascota,
-                boolean_microchip, numero_microchip_mascota, estado_salud_mascota, null);
+                boolean_microchip, numero_microchip_mascota, estado_salud_mascota, null, new HistorialMedico());
         this.mascotas.add(mascota);
         System.out.println("Mascota registrada exitosamente :D!");
     }
@@ -266,7 +266,42 @@ public class Dueno extends Persona implements Serializable {
                         }
                         break;
                     case 4:
-                        System.out.println("Mostrar historial medico de mascota");
+                        // Mostrar mascotas.
+                        System.out.println("\nListado de sus mascotas: ");
+                        count = 1;
+                        for(Mascota mascota : this.mascotas){
+                            System.out.println(count+") " + mascota.getNombre());
+                            count++;
+                        }
+
+                        // Selección mascota.
+                        decision_mascota = 0;
+                        while (true){
+                            System.out.println("\n| 0 para volver atrás.");
+                            System.out.println("Escribe el numero de la mascota a la cual le quiere ver el historial: ");
+                            decision_mascota = scan.nextInt();
+                            scan.nextLine();// Evitar salto de linea.
+
+                            if(decision_mascota < 0 || decision_mascota > this.mascotas.size()){
+                                System.out.println("El numero de la mascota no existe");
+                            }else if(decision_mascota != 0){
+                                HistorialMedico hm = this.mascotas.get(decision_mascota-1).getHistorialMedico();
+
+                                System.out.println("Historial Medico de " + this.mascotas.get(decision_mascota-1).getNombre());
+                                System.out.println("Fecha: " + hm.getFecha());
+                                System.out.println("Observaciones: " + hm.getObservacion());
+                                System.out.println("Diagnostico: " + hm.getDiagnostico());
+                                System.out.println("Tratamiento: " + hm.getTratamiento());
+                                if(hm.isControlFuturo()){
+                                    System.out.println(this.mascotas.get(decision_mascota-1).getNombre() + " tiene no control futuro");
+                                }else{
+                                    System.out.println(this.mascotas.get(decision_mascota-1).getNombre() + " no tiene controles futuros");
+                                }
+                                break;
+                            }else{
+                                break;
+                            }
+                        }
                         break;
                     case 5:
                         System.out.println("Agendar cita para una mascota");

@@ -17,8 +17,10 @@ public class Mascota implements Serializable {
     private int numeroMicrochip;
     private EstadoSalud estadoSalud;
     private ArrayList<Cita> citas = new ArrayList<>();
+    private HistorialMedico historialMedico;
     
-    public Mascota(String nombre, String especie, String raza, int edadEnMeses, float peso, boolean posesionMicrochip, EstadoSalud estadoSalud) {
+    public Mascota(String nombre, String especie, String raza, int edadEnMeses, float peso, boolean posesionMicrochip,
+                   EstadoSalud estadoSalud) {
         this.nombre = nombre;
         this.especie = especie;
         this.raza = raza;
@@ -27,6 +29,7 @@ public class Mascota implements Serializable {
         this.posesionMicrochip = posesionMicrochip;
         this.estadoSalud = estadoSalud;
         this.citas = new ArrayList<>();
+        this.historialMedico = new HistorialMedico();
     }
 
 
