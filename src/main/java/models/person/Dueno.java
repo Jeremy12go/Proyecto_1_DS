@@ -1,11 +1,12 @@
 package models.person;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import models.appointment.Cita;
-import models.pet.EstadoSalud;
-import models.pet.Mascota;
+import models.appointment.*;
+import models.payments.*;
+import models.pet.*;
 import lombok.*;
 
 @Getter @Setter @NoArgsConstructor
@@ -163,7 +164,7 @@ public class Dueno extends Persona implements Serializable {
         // Mostrar citas
         System.out.println(mascota.getNombre() + " tiene " + citasMascota.size() + " citas: ");
         for(Cita cita : citasMascota){
-            System.out.println("Con fecha: "+cita.getFecha()+"\nCon motivo de:" + cita.getMotivo() + "\n");
+            System.out.println("Con fecha: "+ cita.getFecha().toString()+"\nCon motivo de: " + cita.getMotivo() + "\n");
         }
     }
 
@@ -224,31 +225,37 @@ public class Dueno extends Persona implements Serializable {
                         }
                         break;
                     case 3:
-                        // Mostrar Citas de mascotas.
+                        // Mostrar Citas de mascotas con su costo.
                         System.out.println("\nListado de citas por mascota: ");
+                        ArrayList<Cita> citasDisponiblesPago = new ArrayList<>();
                         count = 1;
                         for(Mascota mascota : this.mascotas){
                             ArrayList<Cita> citas = mascota.getCitas();
                             for(Cita cita : citas){
                                 System.out.println(count+") " + mascota.getNombre() + " tiene cita con valor"
-                                        + cita.CalcularCostoTotal());
+                                        + cita.calcularCostoTotal() + "Y estado" + cita.getEstado());
+                                citasDisponiblesPago.add(cita);
                                 count++;
                             }
-
                         }
 
-                        // Selección mascota.
-                        decision_mascota = 0;
+                        // Selección cita a pagar.
+                        int decision_cita = 0;
                         while (true){
                             System.out.println("\n| 0 para volver atrás.");
-                            System.out.println("Escribe el numero de la mascota a la cual le quiere ver las citas: ");
-                            decision_mascota = scan.nextInt();
+                            System.out.println("Escribe el numero de la cita a pagar: ");
+                            decision_cita = scan.nextInt();
                             scan.nextLine();// Evitar salto de linea.
 
-                            if(decision_mascota < 0 || decision_mascota > this.mascotas.size()){
-                                System.out.println("El numero de la mascota no existe");
-                            }else if(decision_mascota != 0){
-                                citasDeMascota(this.mascotas.get(decision_mascota-1));
+                            if(decision_cita < 0 || decision_cita > count-1){
+                                System.out.println("El numero de cita no existe");
+                            }else if(decision_cita != 0){
+
+                                Cita citaA_Pagar = citasDisponiblesPago.get(decision_cita);
+
+                                // Selección de método de pago.
+                                menuSeleccionPago(citaA_Pagar);
+
                                 break;
                             }else{
                                 break;
@@ -269,4 +276,76 @@ public class Dueno extends Persona implements Serializable {
             }
         }
     }
+
+    public void menuSeleccionPago(Cita cita) {
+        Scanner scan = new Scanner(System.in);
+        int monto = cita.calcularCostoTotal();
+        Pago pago = null;
+
+        while (true) {
+            System.out.println("\nMétodos de pago disponibles:");
+            System.out.println("1) Tarjeta");
+            System.out.println("2) Efectivo");
+            System.out.println("3) Seguro Veterinario");
+            System.out.println("0) Cancelar");
+
+            System.out.print("Selecciona el método de pago: ");
+            int opcion = scan.nextInt();
+            scan.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Ingrese tipo de tarjeta (Crédito/Débito): ");
+                    String tipo = scan.nextLine();
+
+                    System.out.print("Ingrese número de tarjeta: ");
+                    String numero = scan.nextLine();
+
+                    System.out.print("Ingrese nombre del titular: ");
+                    String titular = scan.nextLine();
+
+                    System.out.print("Ingrese año de expiración (AAAA): ");
+                    int anio = scan.nextInt();
+                    System.out.print("Ingrese mes de expiración (1-12): ");
+                    int mes = scan.nextInt();
+                    scan.nextLine();
+
+                    pago = new Tarjeta(monto, tipo, numero, titular, LocalDate.of(anio, mes, 1));
+                    break;
+
+                case 2:
+                    pago = new Efectivo(monto);
+                    break;
+
+                case 3:
+                    System.out.print("Ingrese número de póliza: ");
+                    String poliza = scan.nextLine();
+
+                    System.out.print("Ingrese nombre de la aseguradora: ");
+                    String aseguradora = scan.nextLine();
+
+                    System.out.print("Ingrese porcentaje cubierto (ej. 0.8 para 80%): ");
+                    float porcentaje = scan.nextFloat();
+                    scan.nextLine();
+
+                    pago = new SeguroVeterinario(monto, poliza, aseguradora, porcentaje);
+                    break;
+
+                case 0:
+                    System.out.println("Pago cancelado.");
+                    return;
+
+                default:
+                    System.out.println("Opción inválida. Intente nuevamente.");
+                    continue;
+            }
+
+            // Asignar y ejecutar pago.
+            cita.setPago(pago);
+            cita.getEstado().remove(EstadoCita.NO_PAGADO);
+            cita.getEstado().add(EstadoCita.PAGADO);
+            break;
+        }
+    }
+
 }

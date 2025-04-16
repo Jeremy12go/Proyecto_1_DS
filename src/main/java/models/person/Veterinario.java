@@ -11,11 +11,14 @@ import java.util.Scanner;
 public class Veterinario extends Persona implements Serializable {
 
     private String especialidad;
-    private ArrayList<Cita> disponibilidad;
+    private ArrayList<Cita> disponibilidad = new ArrayList<>();
 
     public Veterinario (String nombre, String rut, String especialidad) {
         super(nombre, rut);
         this.especialidad = especialidad;
+    }
+
+    public Veterinario(String s, String s1, String general, ArrayList<Cita> disponibilidad) {
     }
 
     public void menuVeterinario(ArrayList<Servicio> servicios) {
@@ -70,7 +73,8 @@ public class Veterinario extends Persona implements Serializable {
     public void atender(Cita cita, Servicio servicio) {
         if (cita != null && servicio != null) {
             cita.asignarServicio(servicio);
-            cita.setEstado(EstadoCita.REALIZADO); // o el que corresponda
+            cita.getEstado().remove(EstadoCita.PENDIENTE);
+            cita.getEstado().add(EstadoCita.REALIZADO); // o el que corresponda
             System.out.println("\nServicio asignado exitosamente.");
         } else {
             System.out.println("No se puede atender la cita. Datos incompletos.");

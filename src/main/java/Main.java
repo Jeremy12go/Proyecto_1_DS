@@ -1,11 +1,16 @@
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+
 import Repository.RepositoryManager;
 import models.appointment.Cita;
+import models.appointment.EstadoCita;
 import models.person.Direccion;
 import models.person.Dueno;
 import models.person.Veterinario;
+import models.pet.EstadoSalud;
+import models.pet.Mascota;
 import models.service.Servicio;
 
 public class Main implements Serializable {
@@ -115,8 +120,88 @@ public class Main implements Serializable {
         System.out.println("Dueño registrado con éxito");
     }
 
-    public static void main(String[] args) {
+    public static void cargarDatosSimulados() {
+        // Servicios
+        Servicio vacuna = new Servicio("Vacunación", "S001", "Vacuna antirrábica anual", 15000, 20);
+        Servicio desparasitacion = new Servicio("Desparasitación", "S002", "Control de parásitos internos", 12000, 15);
+        Servicio corteUñas = new Servicio("Corte de uñas", "S003", "Corte y limpieza", 8000, 10);
+        servicios.add(vacuna);
+        servicios.add(desparasitacion);
+        servicios.add(corteUñas);
 
+        // Direcciones
+        Direccion dir1 = new Direccion("Maule", "Talca", "San Miguel", "123");
+        Direccion dir2 = new Direccion("Metropolitana", "Santiago", "Ñuñoa", "456");
+
+        // Dueños
+        Dueno dueno1 = new Dueno("Cristina Morales", "12.345.678-9", "cristina@mail.com", dir1, "912345678");
+        Dueno dueno2 = new Dueno("José Pizarro", "22.222.222-2", "jose@mail.com", dir2, "987654321");
+
+        // Mascotas
+        Mascota max = new Mascota("Max", "Perro", "Labrador", 36, 25.0f, true, 100001, EstadoSalud.NORMAL, new ArrayList<>());
+        Mascota kitty = new Mascota("Kitty", "Gato", "Persa", 18, 4.2f, false, 0, EstadoSalud.ALERGIA_A, new ArrayList<>());
+        Mascota luna = new Mascota("Luna", "Perro", "Poodle", 12, 6.5f, true, 100002, EstadoSalud.NORMAL, new ArrayList<>());
+
+        dueno1.getMascotas().add(max);
+        dueno1.getMascotas().add(kitty);
+        dueno2.getMascotas().add(luna);
+
+        duenos.add(dueno1);
+        duenos.add(dueno2);
+
+        // Veterinarios
+        Veterinario vet1 = new Veterinario("Dra. Carolina Soto", "17.111.111-1", "General");
+        Veterinario vet2 = new Veterinario("Dr. Andrés Ruiz", "18.222.222-2", "Felinos");
+
+        veterinarios.add(vet1);
+        veterinarios.add(vet2);
+
+        // Fechas fijas para las citas
+        LocalDate fecha1 = LocalDate.of(2025, 4, 20);
+        LocalDate fecha2 = LocalDate.of(2025, 4, 22);
+        LocalDate fecha3 = LocalDate.of(2025, 4, 25);
+
+        // Citas manuales
+        Cita cita1 = new Cita(
+                Date.from(fecha1.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                "Control anual",
+                max,
+                vet1,
+                vacuna
+        );
+        cita1.setEstado(EnumSet.of(EstadoCita.PENDIENTE, EstadoCita.NO_PAGADO));
+
+        Cita cita2 = new Cita(
+                Date.from(fecha2.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                "Revisión por picazón",
+                kitty,
+                vet2,
+                desparasitacion
+        );
+        cita2.setEstado(EnumSet.of(EstadoCita.PENDIENTE, EstadoCita.NO_PAGADO));
+
+        Cita cita3 = new Cita(
+                Date.from(fecha3.atStartOfDay(ZoneId.systemDefault()).toInstant()),
+                "Corte de uñas y chequeo",
+                luna,
+                vet1,
+                corteUñas
+        );
+        cita3.setEstado(EnumSet.of(EstadoCita.PENDIENTE, EstadoCita.NO_PAGADO));
+
+        // Asignar citas a mascotas
+        max.getCitas().add(cita1);
+        kitty.getCitas().add(cita2);
+        luna.getCitas().add(cita3);
+
+        // Asignar citas a veterinarios
+        vet1.getDisponibilidad().add(cita1);
+        vet1.getDisponibilidad().add(cita3);
+        vet2.getDisponibilidad().add(cita2);
+    }
+
+
+    public static void funcionalidadPrincipal(){
         // Cargar datos guardados.
         RepositoryManager repo = new RepositoryManager();
         duenos = (ArrayList<Dueno>) repo.loadDataList("duenos.dat");
@@ -227,7 +312,6 @@ public class Main implements Serializable {
                     break;
                 case 4:
                     System.out.println("\nEsperamos volver a verte :D!\n");
-
                     // Guardado de datos.
                     repo.saveDataList(duenos,"duenos.dat");
                     repo.saveDataList(veterinarios,"veterinarios.dat");
@@ -239,5 +323,10 @@ public class Main implements Serializable {
                     System.out.println("El digito que ingresaste no es valido");
             }
         }
+    }
+
+
+    public static void main(String[] args) {
+        funcionalidadPrincipal();
     }
 }

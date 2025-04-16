@@ -2,7 +2,6 @@ package models.pet;
 
 import lombok.*;
 import models.appointment.Cita;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -19,8 +18,6 @@ public class Mascota implements Serializable {
     private EstadoSalud estadoSalud;
     private ArrayList<Cita> citas = new ArrayList<>();
 
-    public void  agregarCita(Cita cita){
-        this.citas.add(cita);
-    }
+    public void definirNumeroMicrochip(){}
 
 }
